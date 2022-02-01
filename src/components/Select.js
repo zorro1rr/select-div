@@ -5,17 +5,23 @@ function Select() {
   const [selected, selectedToggle] = useState(null);
   const options = [1, 2, 3, 4, 5];
 
+  function handlekeyDownSelect(e, option) {
+    if (e.charCode === 13) {
+      console.log('hitting this', option);
+      selectedToggle(option);
+    }
+  }
+
   return (
     <div className=" h-screen w-screen bg-green-600 flex justify-center items-center">
       <div className="relative w-1/2">
-        <div
+        <button
           id="selectLabel"
-          role="label"
           className="absolute w-full h-10 rounded-xl bg-gray-300 flex justify-center items-center z-10"
           onClick={() => setToggle(!toggle)}
         >
           {selected ? `Option ${selected}` : 'Select'}
-        </div>
+        </button>
 
         <ul
           role="listbox"
@@ -32,10 +38,15 @@ function Select() {
               <li
                 role="option"
                 aria-selected={selected === option}
-                className={`px-4 justify-between flex items-center h-10 border-t border-slate-800 ${
+                tabIndex="0"
+                key={option}
+                className={`px-4 justify-between flex items-center h-10 border-t border-slate-800 cursor-pointer ${
                   selected === option ? 'bg-slate-400' : 'bg-none'
                 }`}
                 onClick={() => selectedToggle(option)}
+                onKeyPress={(e) => {
+                  handlekeyDownSelect(e, option);
+                }}
               >
                 Option {option}
                 <img
