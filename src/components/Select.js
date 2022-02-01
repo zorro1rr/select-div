@@ -1,54 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Select() {
   const [toggle, setToggle] = useState(false);
   const [selected, selectedToggle] = useState(null);
-  const options = [1, 2, 3, 4, 5];
+  const [selectInput, setSelectInput] = useState("");
+  const [options, setOptions] = useState([]);
 
-  function handlekeyDownSelect(e, option) {
-    if (e.charCode === 13) {
-      console.log('hitting this', option);
+  function handleSelect(e, option) {
+    if (e.type === "click" || e.charCode === 13) {
       selectedToggle(option);
+      setSelectInput(option);
+      setToggle(false);
+    }
+    if (e.key === "ArrowDown") {
+      e.currentTarget.nextSibling && e.currentTarget.nextSibling.focus();
+    }
+    if (e.key === "ArrowUp") {
+      e.currentTarget.previousSibling &&
+        e.currentTarget.previousSibling.focus();
     }
   }
 
+  function search(event) {
+    setSelectInput(event.target.value);
+    setOptions([...options, event.target.value]);
+  }
+
   return (
-    <div className=" h-screen w-screen bg-green-600 flex justify-center items-center">
+    <div className="flex items-center justify-center w-screen h-screen bg-green-600 ">
       <div className="relative w-1/2">
-        <button
+        <input
           id="selectLabel"
-          className="absolute w-full h-10 rounded-xl bg-gray-300 flex justify-center items-center z-10"
+          value={selectInput}
+          onChange={(e) => search(e)}
+          className="absolute z-10 flex items-center justify-center w-full h-10 px-4 bg-gray-300 rounded-xl"
+          placeholder="Search"
+          type="text"
           onClick={() => setToggle(!toggle)}
-        >
-          {selected ? `Option ${selected}` : 'Select'}
-        </button>
+        />
 
         <ul
           role="listbox"
           aria-labelledby="selectLabel"
-          style={{ top: '30px' }}
+          style={{ top: "30px" }}
           className={`absolute w-full pt-3  bg-gray-300 flex-col justify-center  items-center transform transition ease-in ${
             toggle
-              ? 'translate-y-0 opacity-100  rounded-b-xl'
-              : '-translate-y-20 rounded-xl opacity-0 '
+              ? "translate-y-0 opacity-100  rounded-b-xl"
+              : "-translate-y-20 rounded-xl opacity-0 "
           }`}
         >
-          {options.map((option) => {
+          {options.map((option, i) => {
             return (
               <li
                 role="option"
                 aria-selected={selected === option}
                 tabIndex="0"
-                key={option}
-                className={`px-4 justify-between flex items-center h-10 border-t border-slate-800 cursor-pointer ${
-                  selected === option ? 'bg-slate-400' : 'bg-none'
-                }`}
-                onClick={() => selectedToggle(option)}
-                onKeyPress={(e) => {
-                  handlekeyDownSelect(e, option);
+                key={option + i}
+                className={`px-4 justify-between flex items-center h-10 border-t border-slate-800 cursor-pointer focus:bg-slate-400`}
+                onClick={(e) => {
+                  handleSelect(e, option);
+                }}
+                onKeyDown={(e) => {
+                  handleSelect(e, option);
                 }}
               >
-                Option {option}
+                {option}
                 <img
                   src="https://img.icons8.com/ios-glyphs/30/000000/book.png"
                   alt="book"
